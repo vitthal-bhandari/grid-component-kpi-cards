@@ -68,8 +68,8 @@ function getSegmentData() {
 export default function Home() {
 
   const [cards, setCards] = useState<CardData[]>([]);
-  const [metricsData, setMetricsData] = useState<MetricsProps[]>([]);
-  const [segmentData, setSegmentData] = useState<SegmentProps[]>([]);
+  const [metricsData, setMetricsData] = useState<MetricsItem[]>([]);
+  const [segmentData, setSegmentData] = useState<SegmentItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const getCardClasses = (index: number, totalCards: number) => {
