@@ -148,15 +148,15 @@ export default function MediaControlCard({ cardKey, metricsData, segmentData, ca
       >
         <defs>
           <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#4682b4" stopOpacity={0.8}/>
-            <stop offset="95%" stopColor="#4682b4" stopOpacity={0}/>
+            <stop offset="5%" stopColor="#119F97" stopOpacity={0.8}/>
+            <stop offset="95%" stopColor="#119F97" stopOpacity={0}/>
           </linearGradient>
         </defs>
         {/* <CartesianGrid strokeDasharray="3 3" /> */}
         <XAxis dataKey="date" hide={true}/>
         <YAxis  hide={true}/>
         <Tooltip />
-        <Area type="monotone" dataKey="value" stroke="#4682b4" fill="url(#colorUv)" />
+        <Area type="monotone" dataKey="value" stroke="#119F97" fill="url(#colorUv)" />
       </AreaChart>
     )
   }
@@ -164,7 +164,7 @@ export default function MediaControlCard({ cardKey, metricsData, segmentData, ca
   return (
     <Card 
       onClick={handleCardClick}
-      sx={{ borderRadius: '2rem', overflow: 'hidden' }}
+      sx={{ borderRadius: '1.75rem', overflow: 'hidden' }}
       className='flex flex-row align-center justify-center flex-grow min-h-64'
       ref={cardRef}
     >
@@ -233,13 +233,33 @@ export default function MediaControlCard({ cardKey, metricsData, segmentData, ca
 
             <Box className='flex flex-row items-center justify-center mb-2'>
 
-              <Button variant="outlined" color="error" onClick={onCancelClick}  
-              sx={{ margin: '0.5rem', borderRadius: '2.5rem' }}>
+              <Button onClick={onCancelClick}
+              sx={{ 
+                margin: '0.5rem', 
+                borderRadius: '0.875rem', 
+                minWidth: '125px', 
+                backgroundColor: 'rgba(255, 63, 57, 0.12)', 
+                color: '#FF5D39', 
+                '&:hover': {
+                  color: 'white',
+                  backgroundColor: '#FF5D39',
+                },  
+              }}>
                 Cancel
               </Button>
 
               <Button variant="contained" color="success" onClick={onAddClick}
-              sx={{ margin: '0.5rem', borderRadius: '2.5rem'  }}>
+              sx={{ 
+                margin: '0.5rem', 
+                borderRadius: '0.875rem', 
+                minWidth: '125px', 
+                backgroundColor: '#119F97', 
+                color: 'white', 
+                '&:hover': {
+                  color: 'white',
+                  backgroundColor: '#106D67',
+                },  
+              }}>
                 Add
               </Button>
             </Box>

@@ -75,8 +75,8 @@ export default function Home() {
           axios.get('https://sundial-fe-interview.vercel.app/api/segments')
         ]);
 
-        setMetricsData(response1.data); // Update state with the first response data
-        setSegmentData(response2.data); // Update state with the second response data
+        setMetricsData(response1.data.data); // Update state with the first response data
+        setSegmentData(response2.data.data); // Update state with the second response data
         setCards([{
           id: cards.length,
           metrics: '',
@@ -126,7 +126,7 @@ export default function Home() {
 
   return (
     <div className="container max-w-6xl mx-auto p-4">
-      <div className="flex flex-wrap -m-2">
+      <div className="flex flex-wrap m-20">
       {loading ? 
         <div>Loading...</div>
       :
@@ -146,8 +146,8 @@ export default function Home() {
               <Typography>{cardData.id}</Typography>
 
               <MediaControlCard 
-              metricsData={metricsData["data"]} 
-              segmentData={segmentData["data"]}
+              metricsData={metricsData}
+              segmentData={segmentData}
               cardKey={cardData.id} 
               cardState={cardData}
               updateCardState={updateCardState}
