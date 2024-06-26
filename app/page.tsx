@@ -1,126 +1,168 @@
 "use client"
 
 import MediaControlCard from "../components/card"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
-import { IconButton } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {sampleMetricsData} from '../components/response.js';
 import { sampleSegmentsdata } from '../components/response.js';
 
+const axios = require('axios').default;
+
+
 interface CardData {
-  content: string;
-  editMode: boolean;
+  id: number;
+  metrics: string;
+  segmentKey: string;
+  segmentId: string;
+  isApiCalled: boolean;
+  chartDimensions: { width: number; height: number };
+  graphData: Array<{ date: string; value: number }>;
+  isClicked: boolean;
 }
 
-// async function getMetricsData() {
-//   const res = await fetch('https://sundial-fe-interview.vercel.app/api/metrics')
-//   if (!res.ok) {
-//     // This will activate the closest `error.js` Error Boundary
-//     throw new Error('Failed to fetch data')
-//   }
-//   return res.json()
-// }
+function getMetricsData() {
 
-// async function getSegmentData() {
-//   const res = await fetch('https://sundial-fe-interview.vercel.app/api/segments')
-//   if (!res.ok) {
-//     // This will activate the closest `error.js` Error Boundary
-//     throw new Error('Failed to fetch data')
-//   }
-//   return res.json()
-// }
+  axios.get('https://sundial-fe-interview.vercel.app/api/metrics')
+  .then(function (response: any) {
+    return response.data
+  })
+  .catch(function (error: any) {
+    console.log(error);
+  })
+}
+
+function getSegmentData() {
+
+  axios.get('https://sundial-fe-interview.vercel.app/api/segments')
+  .then(function (response: any) {
+    return response.data
+  })
+  .catch(function (error: any) {
+    console.log(error);
+  })
+}
 
 export default function Home() {
 
-  const axios = require('axios').default;
+  const [cards, setCards] = useState<CardData[]>([]);
+  const [metricsData, setMetricsData] = useState(null);
+  const [segmentData, setSegmentData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const [cards, setCards] = useState<CardData[]>([{content: '', editMode: true}]);
-  const [metricsData, setMetricsData] = useState(sampleMetricsData);
-  const [segmentData, setSegmentData] = useState(sampleSegmentsdata);
-
-  // axios.get('https://sundial-fe-interview.vercel.app/api/metrics')
-  // .then(function (response: any) {
-  //   // handle success
-  //   setMetricsData(response.data)
-  // })
-  // .catch(function (error: any) {
-  //   // handle error
-  //   console.log(error);
-  // })
-  // .finally(function () {
-  //   // always executed
-  // });
-
-  // axios.get('https://sundial-fe-interview.vercel.app/api/segments')
-  // .then(function (response: any) {
-  //   // handle success
-  //   setSegmentData(response.data)
-  // })
-  // .catch(function (error: any) {
-  //   // handle error
-  //   console.log(error);
-  // })
-  // .finally(function () {
-  //   // always executed
-  // });
-
-  console.log('metricsData: ', metricsData)
-  console.log('segmentData: ', segmentData)
-
-  const handleAddCardBefore = () => {
-    setCards((prevCards) => [
-      { content: '', editMode: true }, // New card with edit mode on
-      ...prevCards,
-    ]);
-  };
-
-  const handleAddCardAfter = (index: number) => {
-    setCards((prevCards) => {
-      const newCards = [...prevCards];
-      newCards.splice(index + 1, 0, { content: '', editMode: true });
-      return newCards;
-    });
-  };
-
-  const handleAddCard = (index: number) => {
-    if (index === 0) {
-      handleAddCardBefore();
-    } else {
-      handleAddCardAfter(index - 1); // Adjust index for adding after
+  const getCardClasses = (index: number, totalCards: number) => {
+    const positionInRow = (index % 3) + 1;
+    const cardsInRow = Math.min(totalCards - (index - (index % 3)), 3);
+    
+    switch (cardsInRow) {
+      case 1:
+        return 'flex-grow basis-full';
+      case 2:
+        return 'flex-grow basis-1/2';
+      case 3:
+      default:
+        return 'flex-grow basis-1/3';
     }
   };
 
-  return (
-    <div className="container max-w-3xl mx-auto flex flex-wrap"> {/* Overall container */}
+  // Fetch data inside useEffect
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [response1, response2] = await Promise.all([
+          axios.get('https://sundial-fe-interview.vercel.app/api/metrics'),
+          axios.get('https://sundial-fe-interview.vercel.app/api/segments')
+        ]);
 
-    {cards.length > 0 && (
-            <div className="w-full sm:w-1/3 md:w-1/3 flex justify-center items-center">
-              <IconButton onClick={handleAddCardBefore}>
-                <AddCircleIcon /> {/* Plus icon before first card */}
-              </IconButton>
-            </div>
-          )}
+        setMetricsData(response1.data); // Update state with the first response data
+        setSegmentData(response2.data); // Update state with the second response data
+        setCards([{
+          id: cards.length,
+          metrics: '',
+          segmentKey: '',
+          segmentId: '',
+          isApiCalled: false,
+          chartDimensions: { width: 0, height: 0 },
+          graphData: [],
+          isClicked: false,
+        }]);
+        setLoading(false); // Set loading to false once both requests are completed
+      } catch (err) {
+        console.log(err);
+        setLoading(false); // Set loading to false even if request fails
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array means this effect runs once on mount
+
+  const handleAddCard = (index: number) => {
+    const newCard: CardData = {
+      id: cards.length,
+      metrics: '',
+      segmentKey: '',
+      segmentId: '',
+      isApiCalled: false,
+      chartDimensions: { width: 0, height: 0 },
+      graphData: [],
+      isClicked: false,
+    };
+    const newCards = [...cards.slice(0, index), newCard, ...cards.slice(index)];
+    const updatedCards = newCards.map((card, idx) => ({
+      ...card,
+      id: idx
+    }));
+    setCards(updatedCards);
+  };
+
+  const updateCardState = (id: number, updatedData: Partial<CardData>) => {
+    setCards((prevCards) =>
+      prevCards.map((card) =>
+        card.id === id ? { ...card, ...updatedData } : card
+      )
+    );
+  };
+
+  return (
+    <div className="container max-w-6xl mx-auto p-4">
+      <div className="flex flex-wrap -m-2">
+      {loading ? 
+        <div>Loading...</div>
+      :
+      <>
+
           {cards.map((cardData, index) => (
             <div
-              key={index}
-              className="w-full sm:w-1/3 md:w-1/3 px-2 flex justify-center items-center"
+              key={cardData.id}
+              className={`flex justify-center items-center align-center ${getCardClasses(index, cards.length)}`}
             >
-          <MediaControlCard 
-          key={index} 
-          metricsData={metricsData["data"]} 
-          segmentData={segmentData["data"]}
-          /> {/* Render card */}              
-          {index < cards.length - 1 && (
-                <div className="w-full sm:w-1/3 md:w-1/3 flex justify-center items-center">
-                  <IconButton onClick={() => handleAddCard(index)}>
-                    <AddCircleIcon /> {/* Plus icon between cards */}
-                  </IconButton>
-                </div>
-              )}
+              <div className="justify-center items-center p-0">
+                <IconButton onClick={() => handleAddCard(index)} sx={{padding: '0px'}}>
+                  <AddCircleIcon />
+                  
+                </IconButton>
+              </div>
+              <Typography>{cardData.id}</Typography>
+
+              <MediaControlCard 
+              metricsData={metricsData["data"]} 
+              segmentData={segmentData["data"]}
+              cardKey={cardData.id} 
+              cardState={cardData}
+              updateCardState={updateCardState}
+              />           
+
+              <div className="justify-center items-center">
+                <IconButton onClick={() => handleAddCard(index+1)}>
+                  <AddCircleIcon />
+                </IconButton>
+              </div>
             </div>
           ))}
 
+    </>}
+    </div>
       </div>
 
   );
