@@ -10,6 +10,27 @@ import { sampleSegmentsdata } from '../components/response.js';
 
 const axios = require('axios').default;
 
+interface SegmentItem {
+  // Define the properties of each object in the array
+  segmentKey: string;
+  displayName: string;
+  values: string[];
+}
+
+interface MetricsItem {
+  // Define the properties of each object in the array
+  id: string;
+  displayName: string;
+  isPercentageMetric: boolean;
+}
+
+interface SegmentProps {
+  segmentData: SegmentItem[]; // Type for data prop
+}
+
+interface MetricsProps {
+  metricsData: MetricsItem[]; // Type for data prop
+}
 
 interface CardData {
   id: number;
@@ -47,8 +68,8 @@ function getSegmentData() {
 export default function Home() {
 
   const [cards, setCards] = useState<CardData[]>([]);
-  const [metricsData, setMetricsData] = useState();
-  const [segmentData, setSegmentData] = useState();
+  const [metricsData, setMetricsData] = useState<MetricsProps[]>([]);
+  const [segmentData, setSegmentData] = useState<SegmentProps[]>([]);
   const [loading, setLoading] = useState(true);
 
   const getCardClasses = (index: number, totalCards: number) => {
