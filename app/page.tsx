@@ -10,19 +10,19 @@ import { sampleSegmentsdata } from '../components/response.js';
 
 const axios = require('axios').default;
 
+interface SegmentValue {
+  // Define the properties of each object in the array
+  segmentId: string;
+  displayName: string;
+}
+
 interface SegmentItem {
   // Define the properties of each object in the array
   segmentKey: string;
   displayName: string;
-  values: string[];
+  values: SegmentValue[];
 }
 
-interface MetricsItem {
-  // Define the properties of each object in the array
-  id: string;
-  displayName: string;
-  isPercentageMetric: boolean;
-}
 
 interface SegmentProps {
   segmentData: SegmentItem[]; // Type for data prop
