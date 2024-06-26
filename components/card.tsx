@@ -17,11 +17,18 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 
 const axios = require('axios').default;
 
+
+interface SegmentValue {
+  // Define the properties of each object in the array
+  segmentId: string;
+  displayName: string;
+}
+
 interface SegmentItem {
   // Define the properties of each object in the array
   segmentKey: string;
   displayName: string;
-  values: string[];
+  values: SegmentValue[];
 }
 
 interface MetricsItem {
