@@ -36,7 +36,7 @@ interface CardData {
   id: number;
   metrics: string;
   segmentKey: string;
-  segmentId: string;
+  segmentId: number;
   isApiCalled: boolean;
   chartDimensions: { width: number; height: number };
   graphData: Array<{ date: string; value: number }>;
