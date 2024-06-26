@@ -181,9 +181,7 @@ export default function MediaControlCard({ cardKey, metricsData, segmentData, ca
 
           { !cardState.isClicked ? 
           <>
-          <Typography>
-            {cardKey}
-          </Typography>
+
             <FormControl fullWidth className='flex flex-col m-2' sx={{ margin: '0.5rem' }}>
                 <InputLabel 
                   id="demo-simple-select-label"

@@ -164,7 +164,6 @@ export default function Home() {
                   
                 </IconButton>
               </div>
-              <Typography>{cardData.id}</Typography>
 
               <MediaControlCard 
               metricsData={metricsData}
