@@ -32,6 +32,13 @@ interface MetricsProps {
   metricsData: MetricsItem[]; // Type for data prop
 }
 
+interface MetricsItem {
+  // Define the properties of each object in the array
+  id: string;
+  displayName: string;
+  isPercentageMetric: boolean;
+}
+
 interface CardData {
   id: number;
   metrics: string;
