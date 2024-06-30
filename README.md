@@ -1,5 +1,24 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+It uses the following libraries/frameworks -
+- **Material UI** for reusable components
+- **Tailwind CSS** for styling, and 
+- **Recharts** for displaying time series data.
+
+This assignment aims to show a simple grid-based component for displaying data on KPI cards, fetched from the Sundial endpoints.
+
+![Screenshot of the UI built for KPI cards grid component.](https://github.com/vitthal-bhandari/grid-component-kpi-cards/blob/master/assets/images/UI_screenshot.png)
+
+
+## Features
+
+The UI offers simple features as explained below - 
+1. Each KPI Card offers the user to choose between a list of available **Metrics** and **Segments**. Metrics and Segments are fetched from endpoints [sundial-fe-interview.vercel.app/api/metrics](https://sundial-fe-interview.vercel.app/api/metrics) and [sundial-fe-interview.vercel.app/api/segments](https://sundial-fe-interview.vercel.app/api/segments) respectively.
+2. Corresponding the chosen Metric and Segment, the card displays a graph of the data from last 28 days.
+3. Each card has 2 modes - a view mode corresponding to point 2 and an edit mode corresponding to point 1. User can switch from view mode to edit mode by simply clicking anywhere on a card.
+4. A row can accommodate a maximum of 3 cards. However cards less than 3 equally divide/take up the entire available width of the container.
+5. There are plus icons on either side of a card to enable user to add a new card to that particular position.
+
 ## Getting Started
 
 First, run the development server:
