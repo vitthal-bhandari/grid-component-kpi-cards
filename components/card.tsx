@@ -65,6 +65,7 @@ interface MediaControlCardProps extends MetricsProps, SegmentProps {
 }
 
 export default function MediaControlCard({ cardKey, metricsData, segmentData, cardState, updateCardState }: MediaControlCardProps) {
+  const [chartDimensions, setChartDimensions] = React.useState({width: 0, height: 0})
 
   const cardRef = useRef<HTMLDivElement>(null);
   let latestMetric = 0
@@ -81,7 +82,15 @@ export default function MediaControlCard({ cardKey, metricsData, segmentData, ca
   const handleCardClick = (event: { stopPropagation: () => void; }) => {
     if(cardState.isClicked){
       event.stopPropagation(); // Prevent bubbling to document
-      updateCardState(cardKey, { isClicked: !cardState.isClicked }); // Toggle state on click
+      updateCardState(cardKey,{
+        metrics: '',
+        segmentKey: '',
+        segmentId: '',
+        isApiCalled: false,
+        chartDimensions: { width: 0, height: 0 },
+        graphData: [],
+        isClicked: !cardState.isClicked,
+      }); // Toggle state on click
     }
   };
 
@@ -123,33 +132,32 @@ export default function MediaControlCard({ cardKey, metricsData, segmentData, ca
   }, [cardState.isApiCalled]);
 
   useEffect(() => {
+    console.log('inside card use effect')
     const updateDimensions = () => {
       if (cardRef.current) {
         const cardWidth = cardRef.current.offsetWidth;
         const cardHeight = cardRef.current.offsetHeight;
-        updateCardState(cardKey, {
-          chartDimensions: { width: cardWidth * 0.5, height: cardHeight * 0.7 },
-        });
+        setChartDimensions({ width: cardWidth * 0.8, height: cardHeight * 0.7 });
       }
     };
 
     updateDimensions();
-    window.addEventListener('resize', updateDimensions);
 
-    return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
   const renderGraph = (data: any[]) => {
     const datarev = [...data].reverse();
+    const width = chartDimensions["width"] > 0 ? chartDimensions["width"] : 100
+    const height = chartDimensions["height"] > 0 ? chartDimensions["height"] : 75
     return (
       <AreaChart
-        width={cardState.chartDimensions["width"]}
-        height={cardState.chartDimensions["height"]}
+        width={width}
+        height={height}
         data={datarev}
         margin={{
-          top: 10,
-          right: 30,
-          left: 0,
+          top: 0,
+          right: 20,
+          left: 20,
           bottom: 0,
         }}
       >
@@ -159,7 +167,6 @@ export default function MediaControlCard({ cardKey, metricsData, segmentData, ca
             <stop offset="95%" stopColor="#119F97" stopOpacity={0}/>
           </linearGradient>
         </defs>
-        {/* <CartesianGrid strokeDasharray="3 3" /> */}
         <XAxis dataKey="date" hide={true}/>
         <YAxis  hide={true}/>
         <Tooltip />
@@ -175,14 +182,14 @@ export default function MediaControlCard({ cardKey, metricsData, segmentData, ca
       className='flex flex-row align-center justify-center flex-grow min-h-64'
       ref={cardRef}
     >
-      <Box className='flex flex-col align-center justify-center'>
-        <CardContent className='flex flex-col align-center justify-center'>
+      <Box className='flex flex-col items-center justify-center w-full'>
+        <CardContent className='flex flex-col items-center justify-center w-full'>
 
 
           { !cardState.isClicked ? 
           <>
 
-            <FormControl fullWidth className='flex flex-col m-2' sx={{ margin: '0.5rem' }}>
+            <FormControl className='flex flex-col m-2' sx={{ margin: '0.5rem' }}>
                 <InputLabel 
                   id="demo-simple-select-label"
                   sx={{ fontSize: '14px' }}
@@ -206,7 +213,7 @@ export default function MediaControlCard({ cardKey, metricsData, segmentData, ca
                 </Select>
             </FormControl>
 
-            <FormControl fullWidth className='flex flex-col m-2' sx={{ margin: '0.5rem' }}>
+            <FormControl className='flex flex-col m-2' sx={{ margin: '0.5rem' }}>
               <InputLabel 
                 id="demo-simple-select-label-values"
                 sx={{ fontSize: '14px' }}
@@ -272,14 +279,14 @@ export default function MediaControlCard({ cardKey, metricsData, segmentData, ca
           </>
           :
           <>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-center items-center w-full">
               <Typography component="div" variant="subtitle1">
               {metricsData.find((obj) => obj.id === cardState.metrics)?.displayName + `, ` +
               segmentData.find((obj) => obj.segmentKey === cardState.segmentKey)?.values.find((obj) => obj.segmentId === cardState.segmentId)?.displayName}
               </Typography>
               
             </div>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center w-full">
               <div>
               <Typography component="div" variant="h4">
               {formattedNumber}
@@ -288,9 +295,7 @@ export default function MediaControlCard({ cardKey, metricsData, segmentData, ca
               {formattedPercentage +"  " +"\u2206 28d"}
               </Typography>
               </div>
-              <div style={{width: cardState.chartDimensions["width"]}}>
               {renderGraph(cardState.graphData)}
-              </div>
             </div>
             
           </>

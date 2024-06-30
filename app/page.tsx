@@ -3,7 +3,7 @@
 import MediaControlCard from "../components/card"
 import { useEffect, useState } from "react";
 import React from "react";
-import { IconButton, Typography } from "@mui/material";
+import { CircularProgress, IconButton, Typography } from "@mui/material";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {sampleMetricsData} from '../components/response.js';
 import { sampleSegmentsdata } from '../components/response.js';
@@ -85,12 +85,13 @@ export default function Home() {
     
     switch (cardsInRow) {
       case 1:
-        return 'flex-grow basis-full';
+        return 'flex-grow basis-full min-w-full';
       case 2:
-        return 'flex-grow basis-1/2';
+        return 'flex-grow basis-1/2 min-w-1/2';
       case 3:
+        return 'flex-grow basis-1/3 min-w-1/3';
       default:
-        return 'flex-grow basis-1/3';
+        return 'flex-grow basis-1/3 min-w-1/3';
     }
   };
 
@@ -145,6 +146,7 @@ export default function Home() {
   };
 
   const updateCardState = (id: number, updatedData: Partial<CardData>) => {
+    console.log('inside updateCardState: ', id, updatedData)
     setCards((prevCards) =>
       prevCards.map((card) =>
         card.id === id ? { ...card, ...updatedData } : card
@@ -153,22 +155,24 @@ export default function Home() {
   };
 
   return (
-    <div className="container max-w-6xl mx-auto p-4">
-      <div className="flex flex-wrap m-20">
+    <div className="container max-w-7xl m-20 flex flex-col justify-center items-center">
+      <div className="flex flex-wrap w-full justify-center items-center">
       {loading ? 
-        <div>Loading...</div>
+        <div className="flex flex-col justify-center items-center">
+          <Typography variant="h3"className="m-20 text-white">Loading...</Typography>
+          <CircularProgress />
+        </div>
       :
       <>
 
           {cards.map((cardData, index) => (
             <div
               key={cardData.id}
-              className={`flex justify-center items-center align-center ${getCardClasses(index, cards.length)}`}
+              className={`flex justify-center items-center align-center relative group ${getCardClasses(index, cards.length)}`}
             >
-              <div className="justify-center items-center p-0">
-                <IconButton onClick={() => handleAddCard(index)} sx={{padding: '0px'}}>
+              <div className="absolute -left-4 top-1/2 transform -translate-y-1/2 hidden group-hover:block">
+                <IconButton onClick={() => handleAddCard(index)}>
                   <AddCircleIcon />
-                  
                 </IconButton>
               </div>
 
@@ -180,7 +184,7 @@ export default function Home() {
               updateCardState={updateCardState}
               />           
 
-              <div className="justify-center items-center">
+              <div className="absolute -right-4 top-1/2 transform -translate-y-1/2 hidden group-hover:block">
                 <IconButton onClick={() => handleAddCard(index+1)}>
                   <AddCircleIcon />
                 </IconButton>
