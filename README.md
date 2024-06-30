@@ -14,8 +14,8 @@ This assignment aims to show a simple grid-based component for displaying data o
 
 The UI offers simple features as explained below - 
 1. Each KPI Card offers the user to choose between a list of available **Metrics** and **Segments**. Metrics and Segments are fetched from endpoints [sundial-fe-interview.vercel.app/api/metrics](https://sundial-fe-interview.vercel.app/api/metrics) and [sundial-fe-interview.vercel.app/api/segments](https://sundial-fe-interview.vercel.app/api/segments) respectively.
-2. Corresponding the chosen Metric and Segment, the card displays a graph of the data from last 28 days.
-3. Each card has 2 modes - a view mode corresponding to point 2 and an edit mode corresponding to point 1. User can switch from view mode to edit mode by simply clicking anywhere on a card.
+2. Corresponding to the chosen Metric and Segment, the card displays a graph of the data from last 28 days. The data is fetched from the [sundial-fe-interview.vercel.app/api/snapshot ](https://sundial-fe-interview.vercel.app/api/snapshot) endpoint.
+3. Each card has 2 modes - a **view mode** corresponding to point 2 and an **edit mode** corresponding to point 1. User can switch from view mode to edit mode by simply clicking anywhere on a card.
 4. A row can accommodate a maximum of 3 cards. However cards less than 3 equally divide/take up the entire available width of the container.
 5. There are plus icons on either side of a card to enable user to add a new card to that particular position.
 
